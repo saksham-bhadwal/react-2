@@ -6,15 +6,18 @@ function MyComponent() {
     const [height, setheight] = useState()
     const [ship, setship] = useState("")
 
-    const [car,setcar] = useState({model: "ford",
-                                    make: "mustang",
-                                    year:2026
-     })
+    const [car, setcar] = useState({
+        model: "ford",
+        make: "mustang",
+        year: 2026
+    })
 
-     const [foods, setfoods] =useState(["apple", "mango", "pineapple"])
 
-    const updateName = () => {
-        setName("saksham")
+
+    const [foods, setfoods] = useState(["apple", "mango", "pineapple"])
+
+    const updateName = (e) => {
+        setName(e.target.value)
     }
 
     const updateAge = () => {
@@ -40,13 +43,13 @@ function MyComponent() {
     }
 
     function caryear(e) {
-        setcar(c => ({...c, year: e.target.value})) //update functions
+        setcar(c => ({ ...c, year: e.target.value })) //update functions
     }
     function carmake(e) {
-        setcar({...car, make: e.target.value})
+        setcar({ ...car, make: e.target.value })
     }
     function carmodel(e) {
-        setcar({...car, model: e.target.value})
+        setcar({ ...car, model: e.target.value })
     }
 
 
@@ -54,19 +57,19 @@ function MyComponent() {
 
     function handlefood() {
         const newfood = document.getElementById("foodinput").value
-        document.getElementById("foodinput").value =""
-        setfoods( f =>  [...f , newfood])
+        document.getElementById("foodinput").value = ""
+        setfoods(f => [...f, newfood])
     }
 
     function removefood(index) {
-        setfoods(foods.filter(( _ ,i) => i!==index))
+        setfoods(foods.filter((_, i) => i !== index))
     }
 
 
     return (
         <>
             <p className="name" >Name : {name}
-                <button onClick={updateName}>set name</button>
+                <input onChange={updateName} placeholder="enter your name"/>
             </p>
             <p>Age : {age}
                 <button onClick={updateAge}>increase Age</button>
@@ -78,36 +81,40 @@ function MyComponent() {
                 <p>Height: {height}</p>
             </p>
 
-            <label > <input type="radio" value="Pick up" checked = {ship === "Pick up"} onChange={handleShipping} /> 
-             pickup</label>
+            <label > <input type="radio" value="Pick up" checked={ship === "Pick up"} onChange={handleShipping} />
+                pickup</label>
             <label > <input type="radio" value="delivery" checked={ship === "delivery"} onChange={handleShipping} />
-             delivery</label>
+                delivery</label>
 
             <p>Shipping: {ship}</p>
 
 
- //update object 
+            {/* //update object */}
 
-        <p>your fav car : {car.year} {car.model} {car.make} </p>
+            <p>your fav car : {car.year} {car.model} {car.make} </p>
 
             <input type="number" value={car.year} onChange={caryear} />
             <input type="text" value={car.model} onChange={carmodel} />
             <input type="text" value={car.make} onChange={carmake} />
 
 
-  // update array
+            {/* // update array */}
 
-        <h2>list of food</h2>
-        <ul>
-            {foods.map((food,index) => 
-            <li key={index} 
-            >{food} <button onClick={() => removefood(index)}>remove</button></li> )}
-            
-        </ul>
+            <h2>list of food</h2>
+            <ul>
+                {foods.map((food, index) =>
+                    <li key={index}
+                    >{food} <button onClick={() => removefood(index)}>remove</button></li>)}
 
-        <input type="text" id="foodinput" placeholder="enter food name"  />
-        <button onClick={handlefood}>add food</button>
+            </ul>
+
+            <input type="text" id="foodinput" placeholder="enter food name" />
+            <button onClick={handlefood}>add food</button>
+
+            {/* update array of obeject */}
+
         </>
+
     )
 }
 

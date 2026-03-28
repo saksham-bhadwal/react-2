@@ -4,23 +4,25 @@ function Todo() {
     const [todo, settodo] = useState([])
     const [input, setinput] = useState("")
 
-    function addTodo(e) {
-
+    function addTodo() {
         if (input.trim() === "") return;
-
-        settodo((t) => [...t, input]); // add new todo
+        settodo((t) => [...t, { id: Date.now(), text: input, completed: false }]);
         setinput("")
     }
-    function removebtn(index) {
-        settodo(t => t.filter((_, i) => i !== index))
+
+    function removebtn(id) {
+        settodo(t => t.filter((item) => item.id !== id))
     }
 
-    function taskcompleted(index){
-        
+    function taskCompleted(id) {
+        settodo(prev =>
+            prev.map(todo =>
+                todo.id === id ? { ...todo, completed: !todo.completed } : todo
+            )
+        );
     }
 
     return (
-
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-black/60">
 
@@ -33,27 +35,48 @@ function Todo() {
                     type="text"
                     value={input}
                     onChange={(e) => setinput(e.target.value)}
-                    id="todo"
+                    onKeyDown={(e) => e.key === "Enter" && addTodo()}
                     placeholder="enter your task....."
                 />
-
-                <button
-                    onClick={addTodo}
-                    className="w-full bg-amber-400 hover:bg-amber-300 active:scale-95 text-zinc-950 font-bold py-3 rounded-2xl transition-all mb-8"
-                >
-                    ADD TODO
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={addTodo}
+                        className="w-full bg-amber-400 hover:bg-amber-300 active:scale-95 text-zinc-950 font-bold py-3 rounded-2xl transition-all mb-8"
+                    >
+                        ADD TODO
+                    </button>
+                    {todo.length > 0 && (
+                        <button
+                            onClick={() => settodo([])}
+                            className="w-full bg-amber-400 hover:bg-amber-300 active:scale-95 text-zinc-950 font-bold py-3 rounded-2xl transition-all mb-8"
+                        >
+                            REMOVE ALL
+                        </button>
+                    )}
+                </div>
 
                 <ul className="space-y-3">
-                    {todo.map((work, index) => (
+                    {todo.map((work) => (
                         <div
-                            key={index}
+                            key={work.id}
                             className="flex items-center justify-between bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-3"
                         >
-                            <input type="radio" onChange={()=>taskcompleted(index)} />
-                            <li className="text-zinc-100 text-sm list-none">{work}</li>
+                            <input
+                                type="radio"
+                                checked={work.completed}
+                                onChange={() => taskCompleted(work.id)}
+                                className="accent-amber-400 w-4 h-4 cursor-pointer"
+                            />
+                            <li
+                                className={`text-sm list-none transition-all ${work.completed
+                                    ? "line-through text-zinc-500"
+                                    : "text-zinc-100"
+                                    }`}
+                            >
+                                {work.text}
+                            </li>
                             <button
-                                onClick={() => removebtn(index)}
+                                onClick={() => removebtn(work.id)}
                                 className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors"
                             >
                                 remove

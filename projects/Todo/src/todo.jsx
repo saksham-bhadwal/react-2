@@ -93,6 +93,8 @@ function Todo() {
                                 </button>
 
                                 <button className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors" onClick={() =>moveup(index)}>move up</button>
+
+                                
                             </div>
                         </div>
                     ))}

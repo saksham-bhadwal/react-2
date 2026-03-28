@@ -22,6 +22,14 @@ function Todo() {
         );
     }
 
+    function moveup(index) {
+        if(index>0){
+            const updatetask = [...todo];
+            [updatetask[index], updatetask[index-1]] =  [updatetask[index-1], updatetask[index]];
+            settodo(updatetask)
+        }
+    }
+
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 w-full max-w-md shadow-2xl shadow-black/60">
@@ -56,7 +64,7 @@ function Todo() {
                 </div>
 
                 <ul className="space-y-3">
-                    {todo.map((work) => (
+                    {todo.map((work,index) => (
                         <div
                             key={work.id}
                             className="flex items-center justify-between bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-3"
@@ -73,15 +81,19 @@ function Todo() {
                                     : "text-zinc-100"
                                     }`}
                             >
-                                {work.text}
+                             {index+1}.  {work.text}
                             </li>
-                            <button
-                                onClick={() => removebtn(work.id)}
-                                className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors"
-                            >
-                                
-                                remove
-                            </button>
+                            <div className="flex gap-2">
+
+                                <button
+                                    onClick={() => removebtn(work.id)}
+                                    className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors"
+                                >
+                                    remove
+                                </button>
+
+                                <button className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors" onClick={() =>moveup(index)}>move up</button>
+                            </div>
                         </div>
                     ))}
                 </ul>

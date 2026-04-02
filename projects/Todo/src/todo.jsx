@@ -1,17 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react";
 
 function Todo() {
-    const [todo, settodo] = useState([])
-    const [input, setinput] = useState("")
+    const [todo, settodo] = useState(() => {
+        return JSON.parse(localStorage.getItem("todos") || "[]");
+    });
+    const [input, setinput] = useState("");
+    const [editId, setEditId] = useState(null); // track which todo is being edited
+    const [editText, setEditText] = useState(""); // temporary input for editing
 
     function addTodo() {
         if (input.trim() === "") return;
         settodo((t) => [...t, { id: Date.now(), text: input, completed: false }]);
-        setinput("")
+        setinput("");
     }
 
     function removebtn(id) {
-        settodo(t => t.filter((item) => item.id !== id))
+        settodo(t => t.filter((item) => item.id !== id));
     }
 
     function taskCompleted(id) {
@@ -23,12 +27,37 @@ function Todo() {
     }
 
     function moveup(index) {
-        if(index>0){
+        if (index > 0) {
             const updatetask = [...todo];
-            [updatetask[index], updatetask[index-1]] =  [updatetask[index-1], updatetask[index]];
-            settodo(updatetask)
+            [updatetask[index], updatetask[index - 1]] = [updatetask[index - 1], updatetask[index]];
+            settodo(updatetask);
         }
     }
+
+    function startEdit(work) {
+        setEditId(work.id);
+        setEditText(work.text);
+    }
+
+    function saveEdit(id) {
+        settodo(prevTodos =>
+            prevTodos.map(todo =>
+                todo.id === id ? { ...todo, text: editText } : todo
+            )
+        );
+        setEditId(null);
+        setEditText("");
+    }
+
+    useEffect(() => {
+        const savedTodos = JSON.parse(localStorage.getItem("todos") || "[]");
+        settodo(savedTodos);
+    }, []);
+
+
+    useEffect(() => {
+        localStorage.setItem("todos", JSON.stringify(todo));
+    }, [todo]);
 
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
@@ -64,7 +93,7 @@ function Todo() {
                 </div>
 
                 <ul className="space-y-3">
-                    {todo.map((work,index) => (
+                    {todo.map((work, index) => (
                         <div
                             key={work.id}
                             className="flex items-center justify-between bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-3"
@@ -75,26 +104,51 @@ function Todo() {
                                 onChange={() => taskCompleted(work.id)}
                                 className="accent-amber-400 w-4 h-4 cursor-pointer"
                             />
-                            <li
-                                className={`text-sm list-none transition-all ${work.completed
-                                    ? "line-through text-zinc-500"
-                                    : "text-zinc-100"
-                                    }`}
-                            >
-                             {index+1}.  {work.text}
-                            </li>
+                            {editId === work.id ? (
+                                <input
+                                    value={editText}
+                                    onChange={(e) => setEditText(e.target.value)}
+                                    className="flex-1 px-2 py-1 rounded text-black"
+                                />
+                            ) : (
+                                <li
+                                    className={`text-sm list-none transition-all ${work.completed
+                                        ? "line-through text-zinc-500"
+                                        : "text-zinc-100"
+                                        }`}
+                                >
+                                    {index + 1}. {work.text}
+                                </li>
+                            )}
                             <div className="flex gap-2">
-
+                                {editId === work.id ? (
+                                    <button
+                                        onClick={() => saveEdit(work.id)}
+                                        className="text-amber-400 text-xs font-medium"
+                                    >
+                                        Save
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => startEdit(work)}
+                                        className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors"
+                                    >
+                                        Edit
+                                    </button>
+                                )}
                                 <button
                                     onClick={() => removebtn(work.id)}
                                     className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors"
                                 >
-                                    remove
+                                    Remove
                                 </button>
 
-                                <button className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors" onClick={() =>moveup(index)}>move up</button>
-
-                                
+                                <button
+                                    className="text-zinc-500 hover:text-red-400 text-xs font-medium transition-colors"
+                                    onClick={() => moveup(index)}
+                                >
+                                    Move Up
+                                </button>
                             </div>
                         </div>
                     ))}
@@ -102,7 +156,7 @@ function Todo() {
 
             </div>
         </div>
-    )
+    );
 }
 
-export default Todo
+export default Todo;

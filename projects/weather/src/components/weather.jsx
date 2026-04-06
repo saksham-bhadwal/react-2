@@ -34,7 +34,7 @@ export default function WeatherCard({ data, item }) {
       {/* Header */}
       <div className="flex justify-between items-start mb-5">
         <div>
-          <p className="text-sm font-bold tracking-wide">{data.name}</p>
+          <p className="text-sm font-bold tracking-wide">{data.name} [{data.sys.country}] </p>
           <p className="text-xs text-slate-400 mt-0.5">{currentTime}</p>
         </div>
         <button className="flex items-center gap-1.5 text-xs text-slate-400 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 hover:bg-white/10 transition">
@@ -56,7 +56,7 @@ export default function WeatherCard({ data, item }) {
 
       {/* Forecast Text */}
       <p className="text-xs text-slate-400 border-t border-white/5 pt-4 mt-4 leading-relaxed">
-        The skies will be mostly clear. The low will be {forecastMinTemp}°.
+        The skies will be mostly clear. The low will be {forecastMinTemp}°. {data.main.temp > 25 ? "It's a hot day, stay hydrated!" : "It's a pleasant day, enjoy the weather!"}
       </p>
 
       {/* Stats Grid */}

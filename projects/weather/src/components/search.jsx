@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function Search({ onSearch }) {
-    const [city, setCity] = useState("")
+    useEffect(() => {
+        onSearch("kangra");
+    }, []);
+
+    const [city, setCity] = useState("");
 
     function handleSubmit(e) {
         e.preventDefault();

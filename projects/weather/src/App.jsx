@@ -18,7 +18,7 @@ function App() {
     <>
     <div className="min-h-screen bg-gradient-to-br from-[#0f172a] to-[#1a2540] text-white p-4">
 
-      <Search onSearch={handleSubmit} />
+      <Search onSearch={handleSubmit } />
       <Weather data={weather} item={item} />
     </div>
 

@@ -10,8 +10,8 @@ function Clock() {
         const intervalId = setInterval(() => {
             const now = new Date()
             sethour(now.getHours())
-            setmin(now.getMinutes())
-            setsec(now.getSeconds())
+            setmin(now.getMinutes().toString().padStart(2, "0"))
+            setsec(now.getSeconds().toString().padStart(2, "0"))
         }, 1000);
         return () => clearInterval(intervalId);
     }, [])
